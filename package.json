@@ -1,4 +1,42 @@
 {
   "name": "md-links",
-  "version": "0.1.0"
+  "version": "0.1.0",
+  "description": "Get status of url contain in markdown files.",
+  "main": "index.js",
+  "files": [
+    "index.js",
+    "md-links.js"
+  ],
+  "directories": {
+    "test": "test"
+  },
+  "scripts": {
+    "test": "jest"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/fernandabelenVL/SCL010-md-links.git"
+  },
+  "keywords": [
+    "md-links",
+    "markdown",
+    "laboratoria",
+    "SCL010",
+    "node"
+  ],
+  "author": "fernandabelenVL",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/fernandabelenVL/SCL010-md-links/issues"
+  },
+  "homepage": "https://github.com/fernandabelenVL/SCL010-md-links#readme",
+  "dependencies": {
+    "acorn": "^7.0.0",
+    "commander": "^3.0.0",
+    "eslint": "^6.2.1",
+    "eslint-plugin-jest": "^22.15.2",
+    "fetch": "^1.1.0",
+    "filehound": "^1.17.3",
+    "jest": "^24.9.0"
+  }
 }

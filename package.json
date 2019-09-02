@@ -37,6 +37,8 @@
     "eslint-plugin-jest": "^22.15.2",
     "fetch": "^1.1.0",
     "filehound": "^1.17.3",
-    "jest": "^24.9.0"
+    "jest": "^24.9.0",
+    "marked": "^0.7.0",
+    "node-fetch": "^2.6.0"
   }
 }

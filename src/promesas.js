@@ -32,31 +32,31 @@ const getData = (url) => {
     })
 }; 
 
-// let url = 'http://google.cl';
-// getData(url)
-// .then(res => {
-//     console.log('El estado de ', url, 'es ', res)
-// })
-// .catch(error => {
-//     console.log(error);
-// })
-
-const readFile = (fileName, type) => {
-    return new Promise((resolve, reject) => {
-        fs.readFile(fileName, type, (error, content) => {
-            if(error) {
-                reject(error)
-            } else {
-                resolve(content)
-            }
-        })
-    })
-}
-
-readFile('./src/prueba.md', 'utf-8')
+let url = 'http://google.cl';
+getData(url)
 .then(res => {
-    console.log(res);
+    console.log('El estado de ', url, 'es ', res)
 })
-.catch(err => {
-    console.log(error)
+.catch(error => {
+    console.log(error);
 })
+
+// const readFile = (fileName, type) => {
+//     return new Promise((resolve, reject) => {
+//         fs.readFile(fileName, type, (error, content) => {
+//             if(error) {
+//                 reject(error)
+//             } else {
+//                 resolve(content)
+//             }
+//         })
+//     })
+// }
+
+// readFile('./src/prueba.md', 'utf-8')
+// .then(res => {
+//     console.log(res);
+// })
+// .catch(err => {
+//     console.log(error)
+// })

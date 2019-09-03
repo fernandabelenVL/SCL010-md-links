@@ -1,29 +1,13 @@
 #!/usr/bin/env node
 'use strict'; 
 const process = require('process');
-const fetch = require('fetch');
+const fetch = require('node-fetch');
+const fetchUrl = fetch.fetchUrl;
 const pathNode = require('path');
 const FileHound = require('filehound');
 const commander = require('commander');
 const fs = require('fs');
 const marked = require('marked');
-
-
-
-// leer línea de comando que ingresa usuario en la terminal.
-// const userPath = [];
-// for (i = 1; i < process.argv.length; i++){
-//   userPath.push(process.argv[i]);
-//   console.log("Absolute Path:", userPath);
-//   };
-
-// Obtener status de un link por medio de fetch.
-// const fetchUrl = fetch.fetchUrl;
-// fetchUrl("https://www.google.com", function(error, meta, body){
-//   console.log("HTTP Status:" , meta.status);
-//   console.log("Final Url:", meta.finalUrl);
-// });
-
 
 
   let userPath = process.argv[2];
@@ -55,12 +39,43 @@ const searchLinks = (path) => {
       marked(data, {
         renderer: renderer
       })
-      console.log(links);
       resolve(links)
+      validateLinks(links);
+      //console.log(statsLinks(links));
     });
   })
 };
 
+const validateLinks = (links) => {
+  return new Promise((resolve, reject) => {
+     
+    let fetchLinks = links.map(element => {  
+      
+      return fetch(element.href).then(res =>{
+          element.statusCode = res.status;
+          element.status = res.statusText;
+        }).catch((err)=>{
+          element.status = err.code
+        }) 
+    })
+    
+    Promise.all(fetchLinks).then(res => {
+      resolve(links)
+      console.log(links);
+    })
+  })
+}
+
+//stats de cada link 
+const statsLinks = (links, path) => {
+  let href = links.map(element => element.href);
+  const uniqueLinks = new Set(href);
+  return {
+    path: userPath,
+    total: links.length,
+    unique: uniqueLinks.size
+  }
+}
 
 //FILEHOUND para encontrar archivos MD dentro un directorio
 const findMdFiles = (path => {
@@ -70,9 +85,10 @@ const findMdFiles = (path => {
     .ext('md')
     .find()
     .then(files => {
-      //console.log("Archivos MD encontrados: ", files);
       if(files.length != 0){
-      resolve(files)}
+      resolve(files)
+      // findInDirectory(files);
+      }
       else {(console.log("No se encontraron archivos .md dentro de " + path))}
     })
     .catch(err => {
@@ -81,22 +97,52 @@ const findMdFiles = (path => {
   })
 })
 
+// genera arreglo con informacion de los links dentro del directorio
+const findInDirectory = (files) =>{
+  return new Promise((resolve, reject)=>{
+    let count = 0;
+    let allLinks = []
+    files.forEach(element => {
+      searchLinks(element).then(singleLink => {
+        count++
+        allLinks = allLinks.concat(singleLink)
+        if(count == files.length){
+          resolve(allLinks)
+        }
+      }).catch(err => {
+          reject(err)
+        })
+    })
+  })
+}
 
 //comprobar si userPath es archivo o directorio
-const checkMdFiles = (path) => {
+const fileOrDirectory = (path) => {
   let conditionFile = fs.statSync(path)
   //PONER EL ERROR CUANDO LA RUTA NO EXISTE LA RUTA
   //si es archivo
   if (conditionFile.isFile() === true){
-    searchLinks(userPath);
+    searchLinks(path);
   }
    //si es directorio
-  if (conditionFile.isFile() === false){
-    console.log("es un directorio");
-    findMdFiles(userPath);
+  // if (conditionFile.isFile() === false){
+  else{
+      return new Promise((resolve, reject) => { 
+        findMdFiles(path)
+        .then(files => {
+          findInDirectory(files)
+          .then(links => {
+            resolve(links)
+            //console.log(links);
+          })
+        }).catch(err =>{
+          reject(new Error(err.message))
+        })
+      })
+    }
   }
-}
-checkMdFiles(userPath);
+// }
+fileOrDirectory(userPath);
 
 
 
@@ -133,9 +179,9 @@ checkMdFiles(userPath);
 //      options.stats = false;
 // };
 
-
 module.exports = {
-  checkMdFiles,
+  fileOrDirectory,
   findMdFiles,
   searchLinks,
+  findInDirectory
 }

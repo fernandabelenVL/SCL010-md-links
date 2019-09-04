@@ -1,16 +1,20 @@
 {
-  "name": "md-links",
+  "name": "fernandavega-md-links",
   "version": "0.1.0",
   "description": "Get status of url contain in markdown files.",
-  "main": "index.js",
-  "files": [
-    "index.js",
-    "md-links.js"
-  ],
+  "main": "src/index.js",
+  "bin": {
+    "fernandavega-md-links": "bin/md-links",
+    "md-links": "bin/md-links"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
   "directories": {
     "test": "test"
   },
   "scripts": {
+    "md-links": "node -e 'require(\"./index.js\").mdLinks()'",
     "test": "jest"
   },
   "repository": {
@@ -22,7 +26,7 @@
     "markdown",
     "laboratoria",
     "SCL010",
-    "node"
+    "nodeJS"
   ],
   "author": "fernandabelenVL",
   "license": "ISC",
@@ -32,7 +36,6 @@
   "homepage": "https://github.com/fernandabelenVL/SCL010-md-links#readme",
   "dependencies": {
     "acorn": "^7.0.0",
-    "commander": "^3.0.0",
     "eslint": "^6.2.1",
     "eslint-plugin-jest": "^22.15.2",
     "fetch": "^1.1.0",

@@ -45,6 +45,6 @@ mdLinks.mdLinks(path,options).then(res => {
     const resLinks = res.map(element => element.file + "  " + chalk.yellowBright(element.href) + "  " + chalk.cyanBright(element.text.substr(0,50)))
     return console.log(resLinks.join("\n "))
   }
-}).catch(err=>{
+}).catch(err => {
   console.log(chalk.red(err.message))
 });

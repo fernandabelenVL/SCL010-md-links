@@ -3,7 +3,6 @@ const marked = require('marked');
 const FileHound = require('filehound');
 const fetch = require('node-fetch');
 
-
 //FILEHOUND para encontrar archivos MD dentro un directorio
 const findMdFiles = (path =>{
   return new Promise((resolve,reject) => {
@@ -17,18 +16,17 @@ const findMdFiles = (path =>{
       reject(new Error("No se encontraron archivos .md dentro de " + path))
     })
     .catch(err => {
-      reject(new Error("Ruta no es válida"))
+      reject(new Error("Esta ruta no existe, inténtalo con otra"))
     })
   })
 })
-
 
 //leer archivo.md
 const readMd = (path => {
   return new Promise((resolve,reject)=>{
     fs.readFile( path,'utf8', (err, data) => {
       if (err){
-        reject(new Error("No se encontro el archivo " + path))
+        reject(new Error("¡Ups! No se encontro el archivo " + path))
       }
       resolve(data)
     })
@@ -83,7 +81,7 @@ const findInDirectory = (files) =>{
 
 // true si el archivo es .md --> necesario comprobar
 const isMd = (path =>{
-  if(path.slice(-3)== ".md"){
+  if(path.slice(-3) == ".md"){
     return true;
   }
   return false;
@@ -91,11 +89,9 @@ const isMd = (path =>{
 
 //comprobar si path es archivo o directorio
 const fileOrDirectory = (path) => {
-   //checkea si es archivo MD
   if(isMd(path)){
     return searchLinks(path)
   }
-   //si es directorio
   else {
       return new Promise((resolve, reject) => { 
         findMdFiles(path)
@@ -112,22 +108,27 @@ const fileOrDirectory = (path) => {
   }
   
   //[option --validate --stats]
-const statsAndValidateLinks = (path) =>{
-  return new Promise((resolve,reject)=>{
-    validateLinks(path).then(links=>{
+const statsAndValidateLinks = (path) => {
+  return new Promise((resolve,reject) => {
+    validateLinks(path).then(links => {
       const statusLinks = links.map(element => element.status)
-      let okLinks = statusLinks.toString().match(/200/g)
-      const totalLinks = links.length
-      let brokenLinks = 0
+      const totalLinks = links.length;
 
+      let okLinks = statusLinks.toString().match(/OK/g)
       if(okLinks != null){
         okLinks = okLinks.length
       }else{
         okLinks =  0
       }
+
+      let brokenLinks = statusLinks.toString().match(/FAIL/g)
+      if(brokenLinks != null){
+        brokenLinks = brokenLinks.length
+      }else{
+        brokenLinks =  0
+      }
       
-      brokenLinks = totalLinks - okLinks
-      resolve({
+        resolve({
         total: totalLinks,
         ok: okLinks,
         broken: brokenLinks
@@ -143,9 +144,15 @@ const validateLinks = (path) => {
     fileOrDirectory(path)
     .then(links => { 
       let fetchLinks = links.map(element => {  
-        return fetch(element.href).then(res => {
-          element.statusCode = res.status;
-          element.status = res.statusText;
+        return fetch(element.href)
+        .then(res => {
+          if (res.status > 299) {
+            element.statusCode = res.status;
+            element.status = "FAIL";
+          } else {
+            element.statusCode = res.status;
+            element.status = "OK";
+          }
         })
         .catch((err) => {
           element.status = err.code
@@ -161,21 +168,23 @@ const validateLinks = (path) => {
   })
 }
 // [option --stats]
-const statsLinks = (path) =>{
+const statsLinks = (path) => {
 return new Promise((resolve, reject) => { 
   fileOrDirectory(path)
-  .then(links =>{
+  .then(links => {
     const uniqueLinks = new Set(links.map(element => element.href))
-    resolve({total:links.length,
-      unique : uniqueLinks.size})
+    resolve({
+      total:links.length,
+      unique : uniqueLinks.size
     })
-  .catch(err=>{
+  })
+  .catch(err => {
     reject(err)
   })
-  })
+})
 }
 //
-const mdLinks = (path, options) =>{
+const mdLinks = (path, options) => {
   if(!path || !options){
     return new Promise((resolve,reject)=>{
       reject(new Error ("Faltan argumentos"))

@@ -1,11 +1,11 @@
 {
-  "name": "fernandavega-md-links",
-  "version": "0.1.0",
+  "name": "fv-md-links",
+  "version": "1.0.1",
   "description": "Get status of url contain in markdown files.",
-  "main": "src/index.js",
+  "main": "src/md-links.js",
   "bin": {
-    "fernandavega-md-links": "bin/md-links",
-    "md-links": "bin/md-links"
+    "md-links": "src/index.js",
+    "fv-md-links": "src/index.js"
   },
   "publishConfig": {
     "access": "public"
@@ -15,7 +15,9 @@
   },
   "scripts": {
     "md-links": "node -e 'require(\"./index.js\").mdLinks()'",
-    "test": "jest"
+    "test": "jest --coverage",
+    "eslint": "eslint --ext .js src/ test/",
+    "pretest": "npm run eslint"
   },
   "repository": {
     "type": "git",

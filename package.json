@@ -1,11 +1,10 @@
 {
   "name": "fv-md-links",
-  "version": "1.0.1",
-  "description": "Get status of url contain in markdown files.",
+  "version": "1.0.2",
+  "description": "Find and get currect status of url contain in a markdown file.",
   "main": "src/md-links.js",
   "bin": {
-    "md-links": "src/index.js",
-    "fv-md-links": "src/index.js"
+    "md-links": "src/index.js"
   },
   "publishConfig": {
     "access": "public"

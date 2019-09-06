@@ -2,7 +2,7 @@
 
 ## Install
 
-` npm install --save fv-md-links`
+`npm install --save fv-md-links`
 
 ### Usage
 

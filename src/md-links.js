@@ -23,7 +23,7 @@ const findMdFiles = (path =>{
 
 //leer archivo.md
 const readMd = (path => {
-  return new Promise((resolve,reject)=>{
+  return new Promise((resolve,reject) => { 
     fs.readFile( path,'utf8', (err, data) => {
       if (err){
         reject(new Error("¡Ups! No se encontro el archivo " + path))
@@ -61,12 +61,12 @@ const searchLinks = (path => {
 })
 
 // genera arreglo con informacion de los links dentro del directorio
-const findInDirectory = (files) =>{
-  return new Promise((resolve, reject)=>{
+const findInDirectory = (files) => {
+  return new Promise((resolve, reject) => {
     let count = 0;
     let allLinks = []
     files.forEach(element => {
-      searchLinks(element).then(singleLink =>{
+      searchLinks(element).then(singleLink => {
         count++
         allLinks = allLinks.concat(singleLink)
         if(count == files.length){
@@ -80,7 +80,7 @@ const findInDirectory = (files) =>{
 }
 
 // true si el archivo es .md --> necesario comprobar
-const isMd = (path =>{
+const isMd = (path => {
   if(path.slice(-3) == ".md"){
     return true;
   }
@@ -186,7 +186,7 @@ return new Promise((resolve, reject) => {
 //
 const mdLinks = (path, options) => {
   if(!path || !options){
-    return new Promise((resolve,reject)=>{
+    return new Promise((resolve,reject) => {
       reject(new Error ("Faltan argumentos"))
     })
   }
@@ -204,5 +204,6 @@ const mdLinks = (path, options) => {
   }
 
 module.exports = {
-  mdLinks 
+  mdLinks,
+  statsLinks
 }
